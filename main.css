@@ -1,0 +1,39 @@
+/* MAIN CSS FILE FOR PROJECT */
+
+body {
+    font: 12pt Sans-Serif;
+    line-height: 1.7rem;
+}
+
+main {
+    width: 800px;
+    margin: auto;
+    padding-bottom: 60px;
+}
+
+.chart-div {
+    text-align: center;
+    margin:auto;
+    padding:10px;
+}
+
+svg {
+    display: block;
+    margin: auto;
+    padding: 20px;
+}
+
+.axis-left1 line, 
+.axis-left1 path {
+    stroke: none;
+}
+
+.axis-left1 text {
+    font-weight: bold;
+    font-size: 7pt;
+    text-transform: uppercase;
+}
+
+.dot-label {
+    font-size: 8pt;
+}
