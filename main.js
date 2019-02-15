@@ -99,7 +99,44 @@ function updateChartType() {
   //
   // After that, alway update xAxis scale, xAxisGroup with xAxis (call), and same for yAxis scale and yAxisGroup  (see 5.3 example code)
   //
-
+  
+  //Used to get the data for the appropriate type...
+  
+  //Sets up a resuable function for getting the data...
+  var getData = (d) => 0;
+  switch(chartType.selectedIndex){
+    case 0: 
+      getData = (d) => d.downloads;
+      break;
+    case 1:
+      getData = (d) => d.average_rating;
+      break;
+    case 2:
+      getData = (d) => d.thirty_day_keep;
+      break;
+  };
+  console.dir(getData);
+  
+  //Resorting the data.
+  dataset.sort((a,b) => getData(b)-getData(a));
+  
+  //Updating scales.
+  xScale = d3.scaleLinear()
+    .domain([0, d3.max(dataset, getData)]);
+  /*
+  yScale = d3.scaleBand()
+    .domain(dataset.map((d) => d.app_name));
+    */
+  
+  //Updating rects
+  chart1.selectAll('rect')
+    .data(dataset, key)
+    .attr('y', (d) => yScale(d.app_name))
+    .attr('width', getData);
+  
+ //Updating axes.
+ xAxisGroup.call(xAxis);
+ yAxisGroup.call(yAxis);
 }
 
 
