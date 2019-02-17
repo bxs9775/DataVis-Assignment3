@@ -103,40 +103,53 @@ function updateChartType() {
   //Used to get the data for the appropriate type...
   
   //Sets up a resuable function for getting the data...
-  var getData = (d) => 0;
+  var getData = function(d){
+    return 0;
+  };
   switch(chartType.selectedIndex){
     case 0: 
-      getData = (d) => d.downloads;
+      getData = function(d){
+        return d.downloads;
+      };
       break;
     case 1:
-      getData = (d) => d.average_rating;
+      getData = function(d){
+        return d.average_rating;
+      };
       break;
     case 2:
-      getData = (d) => d.thirty_day_keep;
+      getData = function(d){
+        return d.thirty_day_keep;
+      };
       break;
   };
   console.dir(getData);
+  console.dir(getData(dataset[0]));
+  console.dir(getData(dataset[1]));
   
   //Resorting the data.
-  dataset.sort((a,b) => getData(b)-getData(a));
+  dataset.sort((a,b) => (b.average_rating-a.average_rating));
+  
+  console.dir(dataset);
   
   //Updating scales.
-  xScale = d3.scaleLinear()
-    .domain([0, d3.max(dataset, getData)]);
-  /*
-  yScale = d3.scaleBand()
-    .domain(dataset.map((d) => d.app_name));
-    */
+  xScale.domain([0, d3.max(dataset, (d) => d.average_rating)]);
+
+  
+  yScale.domain(dataset.map((d) => d.app_name));
+  
   
   //Updating rects
   chart1.selectAll('rect')
     .data(dataset, key)
+    .attr('x', 80)
     .attr('y', (d) => yScale(d.app_name))
-    .attr('width', getData);
+    .attr('width', (d) => xScale(d.average_rating))
+    .attr('height', 18);
   
- //Updating axes.
- xAxisGroup.call(xAxis);
- yAxisGroup.call(yAxis);
+  //Updating axes.
+  xAxisGroup.call(xAxis);
+  yAxisGroup.call(yAxis);
 }
 
 
