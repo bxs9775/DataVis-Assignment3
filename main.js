@@ -111,45 +111,49 @@ function updateChartType() {
       getData = function(d){
         return d.downloads;
       };
+      xAxis.tickFormat(d3.format(',d'));
       break;
     case 1:
       getData = function(d){
         return d.average_rating;
       };
+      xAxis.tickFormat(d3.format('.1f'));
       break;
     case 2:
       getData = function(d){
         return d.thirty_day_keep;
       };
+      xAxis.tickFormat(d3.format('.0%'));
       break;
   };
-  console.dir(getData);
-  console.dir(getData(dataset[0]));
-  console.dir(getData(dataset[1]));
   
   //Resorting the data.
-  dataset.sort((a,b) => (b.average_rating-a.average_rating));
-  
-  console.dir(dataset);
+  dataset.sort((a,b) => (getData(b)-getData(a)));
   
   //Updating scales.
-  xScale.domain([0, d3.max(dataset, (d) => d.average_rating)]);
-
-  
+  xScale.domain([0, d3.max(dataset, getData)]);
   yScale.domain(dataset.map((d) => d.app_name));
   
   
   //Updating rects
   chart1.selectAll('rect')
     .data(dataset, key)
+    //It would make more sense to use a crossfade here since we are working with different dimensions...
+    .transition('change-chart')
+    .duration(5000)
     .attr('x', 80)
     .attr('y', (d) => yScale(d.app_name))
-    .attr('width', (d) => xScale(d.average_rating))
-    .attr('height', 18);
+    .attr('width', (d) => xScale(getData(d)));
   
   //Updating axes.
-  xAxisGroup.call(xAxis);
-  yAxisGroup.call(yAxis);
+  xAxisGroup
+    .transition('change-xAxis')
+    .duration(1000)
+    .call(xAxis);
+  yAxisGroup
+    .transition('change-yAxis')
+    .duration(1000)
+    .call(yAxis);
 }
 
 
